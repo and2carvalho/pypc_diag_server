@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+	<div>
+		<h4>Detalhes da Ocorrencia</h4>
+		<div>
+			<ul class="row">
+				<li class="col-sm-4">Nome da Máquina: {{ det_ocor.nome_maq }}</li>
+				<li class="col-sm-4">Nome Processador: {{ det_ocor.nome_processador }}</li>
+				<li class="col-sm-4">ID Máquina: {{ det_ocor.id_maq }}</li>
+				<li class="col-sm-4">Data Diagnóstico: {{ det_ocor.data_ocor }}</li>
+				<li class="col-sm-4">Qtd. Processadores: {{ det_ocor.qtd_processador }}</li>
+				<li class="col-sm-4">ID Diagnóstico: {{ det_ocor.ocor_id }}</li>
+				<li class="col-sm-4">Memória Total: {{ (det_ocor.memo_total/1024)|round(3) }} Gb</li>
+				<li class="col-sm-4">Memória Disp.: {{ (det_ocor.memo_disp/1024)|round(3) }} Gb</li>
+			</ul>
+		</div>
+		<div>
+			<span class="chart" id="statusMemo">
+				<script>
+					var graphs = {{figMemo | safe}};
+					Plotly.plot('statusMemo',graphs,{});
+				</script>
+			</span>
+		</div>
+	</div>
+	<div>
+		<div>
+			<h4>Busca por programas que podem causar lentidão</h4>
+			{% if excluir.__len__ == 0 %}
+				<p>Não foram localizados programas causando lentidão na máquina</p>
+			{% else %}
+				<table class="table table-striped">
+					<tr>
+						<th>Nome Programa</th>
+						<th>Versao Programa</th>
+					</tr>
+					{% for prog in excluir %}
+						<tr>
+							<td>{{ prog.prog_nome }}</td>
+							<td>{{ prog.prog_vers }}</td>
+						</tr>
+					{% endfor %}
+				</table>
+			{% endif %}
+			<h4>Busca por navegadores</h4>
+			<table class="table table-striped">
+				<tr>
+					<th>Nome Navegador</th>
+					<th>Versão Navegador</th>
+				</tr>
+				{% for prog in clt_naveg %}
+					<tr>
+						<td>{{ prog.prog_nome }}</td>
+						<td>{{ prog.prog_vers }}</td>
+					</tr>
+				{% endfor %}
+			</table>
+			<h4>Busca por programas relacionados determinada empresa</h4>
+			{% if clt_progEmp.__len__ == 0 %}
+				<p>Não foram localizados programas relacionados à IdBrasil</p>
+			{% else %}
+			<table class="table table-striped">
+				<tr>
+					<th>Nome Programa</th>
+					<th>Versão Programa</th>
+					<th>Status Programa</th>
+				</tr>
+				{% for prog in clt_progEmp.values %}
+					<tr>
+						<td>{{ prog[0].prog_nome }}</td>
+						<td>{{ prog[0].prog_vers }}</td>
+						<td>{{ prog[1] }}</td>
+					</tr>
+				{% endfor %}
+			</table>
+			{% endif %}
+		</div>
+		<div class="row">
+			<div class="col-sm-8">
+				<div class="chart" id="statusHd">
+					<script>
+						var graphs = {{figHd | safe}};
+						Plotly.plot('statusHd',graphs,{});
+					</script>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<p class="display-4">Teste Net</p>
+				<span>
+					{% for net in net %}
+					<p><strong>Dados do Provedor</strong></p>
+					<div class="row">
+						<div class="col-sm-4">
+							<p>Nome: {{ net.prov_net }} </p>
+							<p>Ping: {{ "%.1f"|format(net.ping) }} ms </p>
+						</div>
+						<div class="col-sm-8">
+							<p>Download: {{ "%.2f"|format(net.download/1024/1024) }} Mbps </p>
+							<p>Upload: {{ "%.2f"|format(net.upload/1024/1024) }} Mbps </p>
+						</div>
+					</div>
+					{% endfor %}
+					<div class="row">
+						<p class="display-4">Teste Ping</p>
+						<span class="col-sm-6"><strong>URL DuckDuckGo</strong><br><br>
+						{% for ping in ping %}
+							<p>Média: {{ "%.1f"|format(ping.sofstore_medPing) }} ms </p>
+							<p>Perdas de Pacote<br>(max. 25): {{ ping.sofstore_failed }} </p>
+						</span>
+						<span class="col-sm-6"><strong>URL Google</strong><br><br>
+							<p>Média: {{ "%.1f"|format(ping.google_medPing) }} ms </p>
+							<p>Perdas de Pacote<br>(max. 25): {{ ping.google_failed }} </p>
+						{% endfor %}
+						</span>
+					</div>
+				</span>
+			</div>
+		</div>
+		<h4>Processos em execução</h4>
+		<div class="row">
+			<div class="col-sm-6">
+				<table class="table table-striped">
+					<em>ordenados por consumo de memória</em>
+					<tr>
+						{% for col in col_proc %}
+							<th>{{ col }}</th>
+						{% endfor %}
+					</tr>
+						{% for proc in dic_proc|sort(attribute='proc_memo', reverse=True) %}
+							<tr>
+								<td align="center">{{ proc.proc_nome }}</td>
+								<td align="center">{{ "%.2f"|format(proc.proc_memo/1024) }} Mb</td>
+								<td align="center">{{ "%.2f"|format(proc.proc_cpu) }} %</td>			
+							</tr>
+						{% endfor %}
+				</table>
+			</div><br>
+			<div class="col-sm-6">
+				<table class="table table-striped">
+					<em>ordenados por consumo de CPU</em>
+					<tr>
+						{% for col in col_proc %}
+							<th>{{ col }}</th>
+						{% endfor %}
+					</tr>
+						{% for proc in dic_proc|sort(attribute='proc_cpu', reverse=True) %}
+							<tr>
+								<td align="center">{{ proc.proc_nome }}</td>
+								<td align="center">{{ "%.2f"|format(proc.proc_memo/1024) }} Mb</td>
+								<td align="center">{{ "%.2f"|format(proc.proc_cpu) }} %</td>			
+							</tr>
+						{% endfor %}
+				</table>
+			</div>
+		</div>
+		<div>
+			<h4>Impressoras</h4>
+			<table class="table table-striped">
+				<tr>
+					<th>Impressora</th>
+					<th>Porta</th>
+					<th>Jobs</th>
+					<th>Status</th>
+				</tr>
+				{% for imp in imp %}
+				<tr>
+					<td>{{ imp.imp_nome }}</td>
+					<td>{{ imp.imp_porta }}</td>
+					<td>{{ imp.imp_jobs }}</td>
+					<td>{{ imp.imp_status }}</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+{% endblock %}

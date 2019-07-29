@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+	<div>
+		<div class="container">
+			<div class="jumbotron">
+				<h3 class="text-center">Retomando informações do 
+				banco de dados</h3>
+					<h5><kbd>Clique no id da ocorrencia para 
+					visualizar detalhes.
+					</h5>
+			</div>
+			<div>
+				<table class="table-hover">
+					<tr class="text-center">
+						{% for col in col_bios %}
+						<th>{{ col }}</th>
+						{% endfor %}
+					</tr>
+					{% for ocor in dic_bios|sort(attribute="data_ocor",reverse=True) %}
+					<tr id="target_div">
+						<td><a href="/lista_db/{{ ocor.ocor_id }}">{{ ocor.ocor_id }}</a></td>
+						<td>{{ ocor.id_maq }}</td>
+						<td>{{ ocor.nome_processador }} </td>
+						<td class="text-center">{{ ocor.qtd_processador }} </td>
+						<td>{{ "%.3f"|format(ocor.memo_total/1024) }} Gb</td>
+						<td>{{ "%.3f"|format(ocor.memo_disp/1024) }} Gb</td>
+						<td>{{ ocor.nome_maq }}</td>
+						<td>{{ ocor.data_ocor }}</td>
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}

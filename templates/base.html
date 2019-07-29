@@ -1,0 +1,28 @@
+<html>
+    <head>						
+		<title>server pc_diag</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	</head>    
+    <body>
+		<nav class="navbar navbar-default">
+			<div class="row">
+				<div class="col-sm-8">
+					<h4 class="display-4">PC_DIAG</h4>
+					<hr>
+				</div>
+				<div>
+					<ul class="navbar nav">
+						<li class="col-sm-4"><a href="/">Inicia diagnóstico</a></li>
+						<li class="col-sm-4"><a href="/lista_db">Consulta banco</a></li>
+					</ul>
+
+
+				</div>
+		</nav><hr>
+		<div class="container">
+				{% block conteudo %}{% endblock %}
+		</div>
+    </body>
+</html>
+
