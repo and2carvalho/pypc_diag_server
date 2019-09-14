@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+	<div class="container">
+		<form action='/executa_diag'>
+			<div class="form-group">
+				<label for="user">Digite o nome da empresa:</label>
+				<input type="text" class="form-control" id="user"><br>
+			</div>
+			<div>
+				<label for="loja">Digite o nome da loja:</label>
+				<input type="text" class="form-control" id="loja"><br>
+			</div><br>
+		</form>
+			<div align="center">
+				<button type="button" class="btn btn-block btn-dark">
+					<span class="spinner-border spinner-border-sm"></span>
+						INICIAR
+				</button>
+			</div>
+	</div>
+
+{% endblock %}
