@@ -232,7 +232,7 @@ def fig_statusHd(ocor_id):
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
 # database teste -> so1teste | user -> rocknguns | psw -> masterkey
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://rocknguns:masterkey@db4free.net:3306/so1teste'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://login:password@host:port/db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
